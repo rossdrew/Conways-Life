@@ -10,29 +10,11 @@ import javax.swing.Timer;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 
-//TODO: Figure out how to package icons with JAR
-
-public class TestWindow
-     extends JFrame
-  implements ActionListener, MouseListener 
+/**
+ *  This is the UI for conwaysLife() Implementing a JPanel called lifeGrid()
+ */
+ public class TestWindow extends JFrame implements ActionListener, MouseListener
 {
-	/**
-	 *  This is the interface form for conwaysLife() 
-	 *  Implementing a custom JPanel called lifeGrid()
-	 *  
-	 *  v1.2
-	 *   Added a help menu with programmer information
-	 *   changed paintAll(getGraphics()) for invalidate and repaint methods to stop flickering
-	 *  
-	 *  v1.1
-	 *   Added right click to place glider structure
-	 *   
-	 *  v1.
-	 *   Includes all basic functionality, start play, stop play, 
-	 *  increment step, display neighbour count/life positions and 
-	 *  click to place/remove life. Buttons are iconic.  
-	 */
-	
 	public static TestWindow winInst;
 	
 	private ConwaysLife myLife;
@@ -47,14 +29,9 @@ public class TestWindow
 	private JMenu helpMenu = new JMenu("Help");
 	private JMenuItem helpAbout = new JMenuItem("About");
 	
-	private static String aboutInformation = "<HTML><BODY><small>John Conways</small><br> 'Game of Life' v1.2 <BR><BR>by Ross W. Drew <BR><TT>rosswilliamdrew@googlemail.com</TT>";
+	private static String aboutInformation = "<HTML><BODY><small>John Conways</small><br> 'Game of Life' v1.0.0 <BR><BR>by Ross W. Drew <BR><TT>thek1ng13@hotmail.com</TT>";
 
-//	TODO: Figure out the purpose here.
-	//static final long serialVersionUID=0; 
-	
-//Instance constructor
-	public TestWindow(int initLength, int initWidth)
-	{
+	public TestWindow(int initLength, int initWidth){
 		super("\"John Conways Game of Life\" by Ross Drew");
 		
 		helpAbout.addActionListener(this);
@@ -74,12 +51,10 @@ public class TestWindow
 		  myGrid.addMouseListener(this);
 		 
 		pack();
-	}//CONSTRUCTOR!
-	
-//Create and add control box
-	private void initControlBox()
-	{
-		pCtrl = new JPanel();					//Control Panel
+	}
+
+	private void initControlBox(){
+		pCtrl = new JPanel();
 				
 		icSkip = new ImageIcon("img/skip.png","Skip");
 		icPlay = new ImageIcon("img/play.png","Play");
@@ -87,7 +62,7 @@ public class TestWindow
 		icLoc  = new ImageIcon("img/loc.png","Play");
 		icSum  = new ImageIcon("img/sum.png","Play");
 		
-		bPlay = new JButton(icPlay);			//Controls
+		bPlay = new JButton(icPlay);
 		 isPlaying=false;
 		 bPlay.addActionListener(this);
 		 bPlay.setFocusable(false);
@@ -98,67 +73,55 @@ public class TestWindow
 		 bPop.addActionListener(this);
 		 bPop.setFocusable(false);
 		
-	    evoTimer = new Timer(250, this); //Timer
+	    evoTimer = new Timer(250, this);
 	     evoTimer.addActionListener(this);
 		
-		pCtrl.add(bPlay);						//Combination!
+		pCtrl.add(bPlay);
 		pCtrl.add(bStep);
 		pCtrl.add(bPop);
 		
 		add(pCtrl,BorderLayout.SOUTH);			//Add to form
-	}//initControlBox()
-	
-//Action listener
-	public void actionPerformed(ActionEvent evnt)
-	{
+	}
+
+	public void actionPerformed(ActionEvent evnt){
 		Object src = evnt.getSource();
 		
-	/*STEP*/
-		if (src==bStep || src==evoTimer)
-		{
+	    /*STEP*/
+		if (src==bStep || src==evoTimer){
 			myLife.nextGeneration();
 		}
 		
-   /*PLAY*/
-		else if (src==bPlay)
-		{
-			if (isPlaying)
-			{
+        /*PLAY*/
+		else if (src==bPlay){
+			if (isPlaying){
 				evoTimer.stop();
 				bPlay.setIcon(icPlay);
-			}
-			else
-			{
+			}else{
 				evoTimer.start();
 				bPlay.setIcon(icPaws);
 			}
 			isPlaying=!isPlaying;
 		}
 		
-	/*POP/LOC*/
-		else if (src==bPop)
-		{
-			if (popDisplayed)
-			{
+		/*POP/LOC*/
+		else if (src==bPop){
+			if (popDisplayed){
 				bPop.setIcon(icSum);
-			}
-			else
-			{
+			}else{
 				bPop.setIcon(icLoc);
 			}
 			popDisplayed=!popDisplayed;
 			myGrid.popDisplayed(popDisplayed);
 		}
 		
-   /* ABOUT MENU */
-		else if(src==helpAbout)
-		{
+        /* ABOUT MENU */
+		else if(src==helpAbout){
 		   JOptionPane.showMessageDialog(this, aboutInformation);
 		}
 		
 		invalidate();
 		repaint();
-	}//actionPerformed()
+	}
 	
 	public void mousePressed(MouseEvent e)  {}
 	public void mouseReleased(MouseEvent e) {}
@@ -171,14 +134,11 @@ public class TestWindow
 		newX = (e.getX()/16)-1; 
 		newY = (e.getY()/16)-1;
 		
-		if (e.getButton()==e.BUTTON1)
-		{			
+		if (e.getButton()==e.BUTTON1){
 			//this.setTitle("Loc: "+e.getX()+","+e.getY());
-			
 			myLife.setLocation(newX,newY,!myLife.isOccupied(newX,newY));
 		}
-		else if (e.getButton()==e.BUTTON3 || e.getButton()==e.BUTTON2)
-		{
+		else if (e.getButton()==e.BUTTON3 || e.getButton()==e.BUTTON2){
 		//Glider
 			myLife.setLocation(newX-1,newY-1,false);
 			myLife.setLocation(newX-1,newY,false);
@@ -194,13 +154,11 @@ public class TestWindow
 			
 		}
 		paintAll(getGraphics());
-	}//mouseClicked()
+	}
 
-/* P R O G R A M      E N T R Y       P O I N T */	
-//Program entry main()
-	public static void main(String[] args) 
-	{
+    /* P R O G R A M      E N T R Y       P O I N T */
+	public static void main(String[] args){
 		winInst = new TestWindow(20,20);
 		winInst.setVisible(true);
-	}//main()
-}//testWindow
+	}
+}

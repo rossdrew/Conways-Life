@@ -10,25 +10,17 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-public class LifeGrid
-     extends JPanel
-{
-	/**
-	 * A custom JPanel overiding the paint method 
-	 * to display a life grid form conwaysLife()
-	 * 
-	 * v1.
-	 *  Very basic, allows dipsplay of bug or X for 
-	 * life and neghbour display count.
-	 * 
-	 */
+/**
+ * A JPanel overriding the paint method
+ * to display a life grid form conwaysLife()
+ */
+public class LifeGrid extends JPanel{
 	private ConwaysLife thisLife;
 	private boolean popDisplayed;
 	
 	private BufferedImage imgBug;
 	
-	public LifeGrid(ConwaysLife newLife)
-	{
+	public LifeGrid(ConwaysLife newLife){
 		thisLife = newLife;
 		popDisplayed=false;
 		this.setPreferredSize(new Dimension(thisLife.getLength()*16,thisLife.getWidth()*16));
@@ -40,13 +32,13 @@ public class LifeGrid
 		//System.out.println("Creating Image...");
 			imgBug = ImageIO.read(imgFile);
 		}catch(Exception e){System.out.println("Error loading image");}	
-	}//CONSTRUCTOR
+	}
 	
-	public void popDisplayed(boolean newVal) {popDisplayed=newVal;}//popDisplayed()
-	
-//Paint event method
-	public void paint(Graphics myG)
-	{
+	public void popDisplayed(boolean newVal) {
+	    popDisplayed=newVal;
+	}
+
+	public void paint(Graphics myG){
 		Graphics2D myG2 = (Graphics2D)myG;
 		
 		myG2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -54,27 +46,23 @@ public class LifeGrid
         Font font = new Font("Serif", Font.PLAIN, 16);
         myG2.setFont(font);
         
-        for (int x=0; x<thisLife.getLength(); x++)
-        {
-        	for (int y=0; y<thisLife.getWidth(); y++)
-        	{
+        for (int x=0; x<thisLife.getLength(); x++){
+        	for (int y=0; y<thisLife.getWidth(); y++){
         	/*Neighbours*/
-        		if (popDisplayed)
-        		{
+        		if (popDisplayed){
    					myG2.drawString(""+thisLife.getNeighbours(x,y), ((x+1)*16), ((y+1)*16));
         		}
         		
         	/*Life positions*/
-        		else
-        		{
-	        		if  (thisLife.isOccupied(x,y))
-	        		{
+        		else{
+	        		if  (thisLife.isOccupied(x,y)){
 	        			if (imgBug!=null)
         					myG2.drawImage(imgBug, ((x+1)*16), ((y+1)*16), null);
         				else
         					myG2.drawString("X", ((x+1)*16), ((y+1)*16));
 	        		}
         		}        		
-        }	}//for x+y
-	}//paint()
-}//lifeGrid
+            }
+        }
+	}
+}
