@@ -1,4 +1,4 @@
-package rox;
+package com.rox;
 
 import java.awt.BorderLayout;
 
