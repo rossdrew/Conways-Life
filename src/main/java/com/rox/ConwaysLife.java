@@ -32,10 +32,10 @@ public class ConwaysLife
 		randomizeEcosystem();
 	}
 
-	public int getLength() 	 {return ecosystemLength;}							  //getLength()
-	public int getWidth() 	 {return ecosystemWidth;}	 						  //getHeight()
-	public boolean isOccupied(int x, int y) {return currentEcosystem[x][y];} //isOccupied()
-	public int getNeighbours (int x, int y) {return population[x][y];}//getNeighbours()
+	public int getLength() 	 {return ecosystemLength;}
+	public int getWidth() 	 {return ecosystemWidth;}
+	public boolean isOccupied(int x, int y) {return currentEcosystem[x][y];}
+	public int getNeighbours (int x, int y) {return population[x][y];}
 
 	public void nextGeneration(){
 		for (int x = 0; x< ecosystemLength; x++){
