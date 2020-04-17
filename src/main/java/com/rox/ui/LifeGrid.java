@@ -1,4 +1,6 @@
-package com.rox;
+package com.rox.ui;
+
+import com.rox.PopulationCentricEcosystem;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,12 +17,12 @@ import javax.swing.JPanel;
  * to display a life grid form conwaysLife()
  */
 public class LifeGrid extends JPanel{
-	private ConwaysLife thisLife;
+	private PopulationCentricEcosystem thisLife;
 	private boolean popDisplayed;
 	
 	private BufferedImage imgBug;
 	
-	public LifeGrid(ConwaysLife newLife){
+	public LifeGrid(PopulationCentricEcosystem newLife){
 		thisLife = newLife;
 		popDisplayed=false;
 		this.setPreferredSize(new Dimension(thisLife.getLength()*16,thisLife.getWidth()*16));

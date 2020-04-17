@@ -1,4 +1,7 @@
-package com.rox;
+package com.rox.ui;
+
+import com.rox.ConwaysLifeInArrays;
+import com.rox.PopulationCentricEcosystem;
 
 import java.awt.BorderLayout;
 
@@ -17,7 +20,7 @@ import java.awt.event.MouseEvent;
 {
 	public static TestWindow winInst;
 	
-	private ConwaysLife myLife;
+	private PopulationCentricEcosystem myLife;
 	
 	private LifeGrid myGrid;
 	private JPanel  pCtrl;
@@ -39,7 +42,7 @@ import java.awt.event.MouseEvent;
 		  menuBar.add(helpMenu);
 		   setJMenuBar(menuBar);
 		
-		myLife = new ConwaysLife(initLength,initWidth);
+		myLife = new ConwaysLifeInArrays(initLength,initWidth);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(400,400);

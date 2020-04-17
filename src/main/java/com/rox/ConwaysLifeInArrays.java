@@ -4,23 +4,17 @@ import java.util.Random;
 
 
 /**
- *  An Implementation of John Conways Game of Life
+ *  <h3>John Conways Game of Life</h3>
  *
- *  An object implementation of John Conways 'Game of Life'
- *  keeping track of life positions and neighbour counts for
- *  use on the next iteration which is calculated on command
- *  and each position can be queried for life or neighbour count.
- *
- *  @author Ross W. Drew
+ *  An array absed implementation of John Conways '<i>Game of Life</i>'
+ *  using a {@link PopulationCentricEcosystem}
  */
-public class ConwaysLife
-{
+public class ConwaysLifeInArrays implements PopulationCentricEcosystem {
 	private int ecosystemLength, ecosystemWidth;
 	private boolean[][] currentEcosystem, futureEcosystem;
 	private int[][] population;
 	
-	public ConwaysLife(int maxX, int maxY)
-	{
+	public ConwaysLifeInArrays(int maxX, int maxY){
 		ecosystemLength = maxX;
 		ecosystemWidth  = maxY;
 		
@@ -38,8 +32,8 @@ public class ConwaysLife
 	public int getNeighbours (int x, int y) {return population[x][y];}
 
 	public void nextGeneration(){
-		for (int x = 0; x< ecosystemLength; x++){
-			for (int y = 0; y< ecosystemWidth; y++){
+		for (int x = 0; x < ecosystemLength; x++){
+			for (int y = 0; y < ecosystemWidth; y++){
 				if (population[x][y]==3)
 					futureEcosystem[x][y]=true;
 				
@@ -58,7 +52,6 @@ public class ConwaysLife
 				setLocation(x,y, futureEcosystem[x][y]);
 			}
 		}
-
 	}
 
 	private void informOfChange(int atX, int atY, boolean isAdd){
@@ -76,7 +69,7 @@ public class ConwaysLife
 				currentEcosystem[atX][atY] =value;
 			else
 				return;
-		else 
+		else
 			return;
 
 		//Inform neighbours
