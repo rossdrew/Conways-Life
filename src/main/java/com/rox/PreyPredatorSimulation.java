@@ -1,16 +1,19 @@
 package com.rox;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class PreyPredatorSimulation {
+    /**
+     * An entity which ages
+     */
     private interface TemporalEntity {
         void incrementAge();
         boolean pastLifeSpan();
     }
+
     private class Shark implements TemporalEntity {
         private int age = 1;
         private int lifeSpan = 20;
@@ -60,11 +63,7 @@ public class PreyPredatorSimulation {
     }
 
     private class Sea implements TemporalEntity  {
-        private int age = 1;
-
-        public void incrementAge() {
-            age++;
-        }
+        public void incrementAge() { /* NOP */ }
 
         @Override
         public String toString() {
@@ -114,42 +113,20 @@ public class PreyPredatorSimulation {
     public void cycle(){
         for (int x=0; x<biomeLength; x++){
             for (int y=0; y<biomeBreadth; y++){
-                final Set<TemporalEntity> neighbours = neighbours(x, y);
-                final List<Shark> sharks = neighbours.stream().filter(it -> it instanceof Shark).map(it -> (Shark) it).collect(Collectors.toList());
-                final List<Fish> fishes = neighbours.stream().filter(it -> it instanceof Fish).map(fish -> (Fish) fish).collect(Collectors.toList());
+                final Set<TemporalEntity> neighbours = listNeighbours(x, y);
+                final List<Shark> sharks = neighbours.stream()
+                        .filter(it -> it instanceof Shark)
+                        .map(it -> (Shark) it)
+                        .collect(Collectors.toList());
+                final List<Fish> fishes = neighbours.stream()
+                        .filter(it -> it instanceof Fish)
+                        .map(it -> (Fish) it)
+                        .collect(Collectors.toList());
 
-                //>= 4 nearby && >= 3 of them are of breeding age && < other species THEN +1
-                if (biome[x][y] instanceof Sea) {
-                    if (fishes.size() > 3 && fishes.stream().filter(fish -> fish.ofBreedingAge()).count() > 2) {
-                        biome[x][y] = new Fish();
-                    }
-                    //These two will clash if rules aren't mathematically compatible...and I'm not trying to prove it
-                    if (sharks.size() > 3 && sharks.stream().filter(shark -> shark.ofBreedingAge()).count() > 2) {
-                        biome[x][y] = new Shark();
-                    }
-                }
-
-                //if passed lifeSpan -> DIE
-                if (!(biome[x][y] instanceof Sea) && biome[x][y].pastLifeSpan()){
-                    biome[x][y] = new Sea();
-                }
-
-                //>5 sharks || fish==8 -> DIE
-                if (biome[x][y] instanceof Fish && (sharks.size() > 5 || fishes.size() == 8)) {
-                    biome[x][y] = new Sea();
-                }
-
-                if (biome[x][y] instanceof Shark) {
-                    //>= 6 sharks && fish == 0 -> DIE,
-                    if (sharks.size() > 5 && fishes.size() == 0){
-                        biome[x][y] = new Sea();
-                    }
-
-                    //1/32 chance -> DIE
-                    if (rand.nextInt((35 - 1) + 1) + 1 == 1){
-                        biome[x][y] = new Sea();
-                    }
-                }
+                birth(x, y, sharks, fishes);
+                ageDeaths(x, y);
+                fishDeaths(x, y, sharks, fishes);
+                sharkDeaths(x, y, sharks, fishes);
 
                 biome[x][y].incrementAge();
             }
@@ -157,9 +134,59 @@ public class PreyPredatorSimulation {
     }
 
     /**
+     * Death if
+     *  - >5 sharks || fish==8 -> DIE
+     *  - 1/32 roll comes up 1
+     */
+    public void sharkDeaths(int x, int y, List<Shark> sharks, List<Fish> fishes) {
+        if (biome[x][y] instanceof Shark) {
+            if (sharks.size() > 5 && fishes.size() == 0){
+                biome[x][y] = new Sea();
+            }
+
+            if (rand.nextInt((35 - 1) + 1) + 1 == 1){
+                biome[x][y] = new Sea();
+            }
+        }
+    }
+
+    /**
+     * Death if >5 sharks || fish==8
+     */
+    public void fishDeaths(int x, int y, List<Shark> sharks, List<Fish> fishes) {
+        if (biome[x][y] instanceof Fish && (sharks.size() > 5 || fishes.size() == 8)) {
+            biome[x][y] = new Sea();
+        }
+    }
+
+    /**
+     * Death if passed lifeSpan
+     */
+    public void ageDeaths(int x, int y) {
+        if (!(biome[x][y] instanceof Sea) && biome[x][y].pastLifeSpan()){
+            biome[x][y] = new Sea();
+        }
+    }
+
+    /**
+     * Create life if >= 4 nearby && >= 3 of them are of breeding age && < other species
+     */
+    public void birth(int x, int y, List<Shark> sharks, List<Fish> fishes) {
+        if (biome[x][y] instanceof Sea) {
+            if (fishes.size() > 3 && fishes.stream().filter(fish -> fish.ofBreedingAge()).count() > 2) {
+                biome[x][y] = new Fish();
+            }
+            //These two will clash if rules aren't mathematically compatible...and I'm not trying to prove it
+            if (sharks.size() > 3 && sharks.stream().filter(shark -> shark.ofBreedingAge()).count() > 2) {
+                biome[x][y] = new Shark();
+            }
+        }
+    }
+
+    /**
      * Create a {@link Set} of neighbouring {@link TemporalEntity}s from adjacent tiles
      */
-    private Set<TemporalEntity> neighbours(int x, int y){
+    private Set<TemporalEntity> listNeighbours(int x, int y){
         final Set<TemporalEntity> neighbours = new HashSet<TemporalEntity>();
         boolean leftEdge = x==0;
         boolean rightEdge = x==biomeLength-1;
@@ -226,7 +253,7 @@ public class PreyPredatorSimulation {
             listOfIndexes.add(i);
         }
         Collections.shuffle(listOfIndexes);
-        final Stack<Integer> shuffledStack = new Stack<Integer>();
+        final Stack<Integer> shuffledStack = new Stack<>();
         shuffledStack.addAll(listOfIndexes);
         return shuffledStack;
     }
