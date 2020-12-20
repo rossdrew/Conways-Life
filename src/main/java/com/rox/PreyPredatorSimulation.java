@@ -114,19 +114,19 @@ public class PreyPredatorSimulation {
         for (int x=0; x<biomeLength; x++){
             for (int y=0; y<biomeBreadth; y++){
                 final Set<TemporalEntity> neighbours = listNeighbours(x, y);
-                final List<Shark> sharks = neighbours.stream()
+                final List<Shark> sharkNeighbours = neighbours.stream()
                         .filter(it -> it instanceof Shark)
                         .map(it -> (Shark) it)
                         .collect(Collectors.toList());
-                final List<Fish> fishes = neighbours.stream()
+                final List<Fish> fishNeighbours = neighbours.stream()
                         .filter(it -> it instanceof Fish)
                         .map(it -> (Fish) it)
                         .collect(Collectors.toList());
 
-                birth(x, y, sharks, fishes);
+                birth(x, y, sharkNeighbours, fishNeighbours);
                 ageDeaths(x, y);
-                fishDeaths(x, y, sharks, fishes);
-                sharkDeaths(x, y, sharks, fishes);
+                fishDeaths(x, y, sharkNeighbours, fishNeighbours);
+                sharkDeaths(x, y, sharkNeighbours, fishNeighbours);
 
                 biome[x][y].incrementAge();
             }
